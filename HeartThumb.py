@@ -229,10 +229,10 @@ smallBalloonSprite = thumby.Sprite(8, 8, smallBaloonFrames)
 
 
 class TileInfo:
-    def __init__(self, spriteNum, falling, moveable):
+    def __init__(self, spriteNum, falling, pushable):
         self.sprite = spriteNum
         self.falling = falling
-        self.moveable = moveable
+        self.pushable = pushable
 
 class SpriteInfo:
     def __init__(self, sprite, coordinates):
@@ -267,7 +267,9 @@ heartCount = 0
 
 while(1):
     
-    #this is used to slow down sprite animation.
+    smallElfSpriteRight.setFrame(smallElfSpriteRight.currentFrame*0)
+    smallElfSpriteLeft.setFrame(smallElfSpriteLeft.currentFrame*0)
+    #this is used to slow down sprite animation. 
     spriteRate = (spriteRate + 1) % 4
     
     t0 = time.ticks_ms()   # Get time (ms)
@@ -286,67 +288,61 @@ while(1):
 
     if (thumby.buttonL.pressed() == True and positionX >= 0 ):
 
-        print("int(positionX / 8: ", int(positionX / 8))
-        print("[int(positionY / 8)][int(positionX / 8) - 1].moveable: ", level[int(positionY / 8)][int(positionX / 8) - 1].moveable)
-        print("[int(positionY / 8)][int(positionX / 8) - 2].sprite: ", level[int(positionY / 8)][int(positionX / 8) - 2].sprite)
-
-
-
-        if (level[int(positionY / 8)][int(positionX / 8) - 1].sprite == 5) or (level[int(positionY / 8)][int(positionX / 8) - 1].sprite == 4):
+        if (level[int(positionY / 8)][int(positionX / 8) - 1].sprite == TILE_METAL) or (level[int(positionY / 8)][int(positionX / 8) - 1].sprite == TILE_WALL):
             continue
         
         #moving one object left
-        elif int(positionX / 8) > 1 and level[int(positionY / 8)][int(positionX / 8) - 1].moveable and level[int(positionY / 8)][int(positionX / 8) - 2].sprite == 0:
+        elif int(positionX / 8) > 1 and level[int(positionY / 8)][int(positionX / 8) - 1].pushable and level[int(positionY / 8)][int(positionX / 8) - 2].sprite == TILE_EMPTY:
             #move rock
-            if level[int(positionY / 8)][int(positionX / 8) - 1].sprite == 2:
-                level[int(positionY / 8)][int(positionX / 8) - 2].sprite = 2
+            if level[int(positionY / 8)][int(positionX / 8) - 1].sprite == TILE_ROCK:
+                level[int(positionY / 8)][int(positionX / 8) - 2].sprite = TILE_ROCK
                 level[int(positionY / 8)][int(positionX / 8) - 2].falling = False
-                level[int(positionY / 8)][int(positionX / 8) - 2].moveable = True
+                level[int(positionY / 8)][int(positionX / 8) - 2].pushable = True
                 
-                level[int(positionY / 8)][int(positionX / 8) - 1].sprite = 40
+                level[int(positionY / 8)][int(positionX / 8) - 1].sprite = TILE_DWARF
                 level[int(positionY / 8)][int(positionX / 8) - 1].falling = False
-                level[int(positionY / 8)][int(positionX / 8) - 1].moveable = False
+                level[int(positionY / 8)][int(positionX / 8) - 1].pushable = False
                 
                 
-                level[int(positionY / 8)][int(positionX / 8)].sprite = 0
+                level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_EMPTY
                 level[int(positionY / 8)][int(positionX / 8)].falling = False
-                level[int(positionY / 8)][int(positionX / 8)].moveable = False
+                level[int(positionY / 8)][int(positionX / 8)].pushable = False
             
                 positionX -= 8
                 if positionX <= 0:
                     positionX = 0
 
             #move bomb
-            if level[int(positionY / 8)][int(positionX / 8) - 1].sprite == 6:
-                level[int(positionY / 8)][int(positionX / 8) - 2].sprite = 6
+            if level[int(positionY / 8)][int(positionX / 8) - 1].sprite == TILE_GRENADE:
+                level[int(positionY / 8)][int(positionX / 8) - 2].sprite = TILE_GRENADE
                 level[int(positionY / 8)][int(positionX / 8) - 2].falling = False
-                level[int(positionY / 8)][int(positionX / 8) - 2].moveable = True
+                level[int(positionY / 8)][int(positionX / 8) - 2].pushable = True
                 
-                level[int(positionY / 8)][int(positionX / 8) - 1].sprite = 40
+                level[int(positionY / 8)][int(positionX / 8) - 1].sprite = TILE_DWARF
                 level[int(positionY / 8)][int(positionX / 8) - 1].falling = False
-                level[int(positionY / 8)][int(positionX / 8) - 1].moveable = False
+                level[int(positionY / 8)][int(positionX / 8) - 1].pushable = False
                 
-                level[int(positionY / 8)][int(positionX / 8)].sprite = 0
+                level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_EMPTY
                 level[int(positionY / 8)][int(positionX / 8)].falling = False
-                level[int(positionY / 8)][int(positionX / 8)].moveable = False
+                level[int(positionY / 8)][int(positionX / 8)].pushable = False
             
                 positionX -= 8
                 if positionX <= 0:
                     positionX = 0
 
             #move balloon
-            if level[int(positionY / 8)][int(positionX / 8) - 1].sprite == 12:
-                level[int(positionY / 8)][int(positionX / 8) - 2].sprite = 12
+            if level[int(positionY / 8)][int(positionX / 8) - 1].sprite == TILE_GRASS2:
+                level[int(positionY / 8)][int(positionX / 8) - 2].sprite = TILE_BALLOON
                 level[int(positionY / 8)][int(positionX / 8) - 2].falling = False
-                level[int(positionY / 8)][int(positionX / 8) - 2].moveable = True
+                level[int(positionY / 8)][int(positionX / 8) - 2].pushable = True
                 
-                level[int(positionY / 8)][int(positionX / 8) - 1].sprite = 40
+                level[int(positionY / 8)][int(positionX / 8) - 1].sprite = TILE_DWARF
                 level[int(positionY / 8)][int(positionX / 8) - 1].falling = False
-                level[int(positionY / 8)][int(positionX / 8) - 1].moveable = False
+                level[int(positionY / 8)][int(positionX / 8) - 1].pushable = False
                 
-                level[int(positionY / 8)][int(positionX / 8)].sprite = 0
+                level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_EMPTY
                 level[int(positionY / 8)][int(positionX / 8)].falling = False
-                level[int(positionY / 8)][int(positionX / 8)].moveable = False
+                level[int(positionY / 8)][int(positionX / 8)].pushable = False
             
                 positionX -= 8
                 if positionX <= 0:
@@ -354,72 +350,72 @@ while(1):
 
     
                 
-        elif level[int(positionY / 8)][int(positionX / 8)-1].sprite == 0 or level[int(positionY / 8)][int(positionX / 8)-1].sprite == 1 or level[int(positionY / 8)][int(positionX / 8)-1].sprite == 3:
-            level[int(positionY / 8)][int(positionX / 8)].sprite = 0
+        elif level[int(positionY / 8)][int(positionX / 8)-1].sprite == TILE_EMPTY or level[int(positionY / 8)][int(positionX / 8)-1].sprite == TILE_GRASS or level[int(positionY / 8)][int(positionX / 8)-1].sprite == TILE_HEART:
+            level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_EMPTY
             positionX -= 8
             if positionX <= 0:
                 positionX = 0
             
-            level[int(positionY / 8)][int(positionX / 8)].sprite = 40
+            level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_DWARF
         lastDir = "left"
         #TODO: move rock left  if rock has empty on other side of rock.
 
     # Right
     if (thumby.buttonR.pressed() == True and positionX < 64 ):
 
-        if (level[int(positionY / 8)][int(positionX / 8) + 1].sprite == 5) or (level[int(positionY / 8)][int(positionX / 8) + 1].sprite == 4):
+        if (level[int(positionY / 8)][int(positionX / 8) + 1].sprite == TILE_METAL) or (level[int(positionY / 8)][int(positionX / 8) + 1].sprite == TILE_WALL):
             continue
 
-        elif int(positionX / 8) < 7 and level[int(positionY / 8)][int(positionX / 8) + 1].moveable and level[int(positionY / 8)][int(positionX / 8) + 2].sprite == 0:
-            if level[int(positionY / 8)][int(positionX / 8) + 1].sprite == 2:
-                level[int(positionY / 8)][int(positionX / 8) + 2].sprite = 2
+        elif int(positionX / 8) < 7 and level[int(positionY / 8)][int(positionX / 8) + 1].pushable and level[int(positionY / 8)][int(positionX / 8) + 2].sprite == TILE_EMPTY:
+            if level[int(positionY / 8)][int(positionX / 8) + 1].sprite == TILE_ROCK:
+                level[int(positionY / 8)][int(positionX / 8) + 2].sprite = TILE_ROCK
                 level[int(positionY / 8)][int(positionX / 8) + 2].falling = False
-                level[int(positionY / 8)][int(positionX / 8) + 2].moveable = True
+                level[int(positionY / 8)][int(positionX / 8) + 2].pushable = True
                 
-                level[int(positionY / 8)][int(positionX / 8) + 1].sprite = 40
+                level[int(positionY / 8)][int(positionX / 8) + 1].sprite = TILE_DWARF
                 level[int(positionY / 8)][int(positionX / 8) + 1].falling = False
-                level[int(positionY / 8)][int(positionX / 8) + 1].moveable = False
+                level[int(positionY / 8)][int(positionX / 8) + 1].pushable = False
                 
                 
-                level[int(positionY / 8)][int(positionX / 8)].sprite = 0
+                level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_EMPTY
                 level[int(positionY / 8)][int(positionX / 8)].falling = False
-                level[int(positionY / 8)][int(positionX / 8)].moveable = False
+                level[int(positionY / 8)][int(positionX / 8)].pushable = False
             
                 positionX -= 8
                 if positionX <= 0:
                     positionX = 0
 
 
-            if level[int(positionY / 8)][int(positionX / 8) + 1].sprite == 6:
-                level[int(positionY / 8)][int(positionX / 8) + 2].sprite = 6
+            if level[int(positionY / 8)][int(positionX / 8) + 1].sprite == TILE_GRENADE:
+                level[int(positionY / 8)][int(positionX / 8) + 2].sprite = TILE_GRENADE
                 level[int(positionY / 8)][int(positionX / 8) + 2].falling = False
-                level[int(positionY / 8)][int(positionX / 8) + 2].moveable = True
+                level[int(positionY / 8)][int(positionX / 8) + 2].pushable = True
                 
-                level[int(positionY / 8)][int(positionX / 8) + 1].sprite = 40
+                level[int(positionY / 8)][int(positionX / 8) + 1].sprite = TILE_DWARF
                 level[int(positionY / 8)][int(positionX / 8) + 1].falling = False
-                level[int(positionY / 8)][int(positionX / 8) + 1].moveable = False
+                level[int(positionY / 8)][int(positionX / 8) + 1].pushable = False
                 
-                level[int(positionY / 8)][int(positionX / 8)].sprite = 0
+                level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_EMPTY
                 level[int(positionY / 8)][int(positionX / 8)].falling = False
-                level[int(positionY / 8)][int(positionX / 8)].moveable = False
+                level[int(positionY / 8)][int(positionX / 8)].pushable = False
             
                 positionX -= 8
                 if positionX <= 0:
                     positionX = 0
 
 
-            if level[int(positionY / 8)][int(positionX / 8) + 1].sprite == 12:
-                level[int(positionY / 8)][int(positionX / 8) + 2].sprite = 12
+            if level[int(positionY / 8)][int(positionX / 8) + 1].sprite == TILE_GRASS2:
+                level[int(positionY / 8)][int(positionX / 8) + 2].sprite = TILE_BALLOON
                 level[int(positionY / 8)][int(positionX / 8) + 2].falling = False
-                level[int(positionY / 8)][int(positionX / 8) + 2].moveable = True
+                level[int(positionY / 8)][int(positionX / 8) + 2].pushable = True
                 
-                level[int(positionY / 8)][int(positionX / 8) + 1].sprite = 40
+                level[int(positionY / 8)][int(positionX / 8) + 1].sprite = TILE_DWARF
                 level[int(positionY / 8)][int(positionX / 8) + 1].falling = False
-                level[int(positionY / 8)][int(positionX / 8) + 1].moveable = False
+                level[int(positionY / 8)][int(positionX / 8) + 1].pushable = False
                 
-                level[int(positionY / 8)][int(positionX / 8)].sprite = 0
+                level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_EMPTY
                 level[int(positionY / 8)][int(positionX / 8)].falling = False
-                level[int(positionY / 8)][int(positionX / 8)].moveable = False
+                level[int(positionY / 8)][int(positionX / 8)].pushable = False
             
                 positionX -= 8
                 if positionX <= 0:
@@ -428,48 +424,48 @@ while(1):
             
             
 
-        elif level[int(positionY / 8)][int(positionX / 8)+1].sprite == 0 or level[int(positionY / 8)][int(positionX / 8)+1].sprite == 1 or level[int(positionY / 8)][int(positionX / 8)+1].sprite == 3:
-            level[int(positionY / 8)][int(positionX / 8)].sprite = 0
+        elif level[int(positionY / 8)][int(positionX / 8)+1].sprite == TILE_EMPTY or level[int(positionY / 8)][int(positionX / 8)+1].sprite == TILE_GRASS or level[int(positionY / 8)][int(positionX / 8)+1].sprite == TILE_HEART:
+            level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_EMPTY
             positionX += 8
             if positionX >= 64:
                 positionX = 64
             
-            level[int(positionY / 8)][int(positionX / 8)].sprite = 40
+            level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_DWARF
         lastDir = "right"
 
 
         #TODO: move rock right if rock has empty on other side of rock.
     # Up
     if (thumby.buttonU.pressed() == True and positionY > 0 ):
-        if level[int(positionY / 8 - 1)][int(positionX / 8)].moveable or level[int(positionY / 8 - 1)][int(positionX / 8)].sprite == 4 or level[int(positionY / 8 - 1)][int(positionX / 8)].sprite == 5 or level[int(positionY / 8 - 1)][int(positionX / 8)].sprite == 6 or level[int(positionY / 8 - 1)][int(positionX / 8)].sprite == 12:
+        if level[int(positionY / 8 - 1)][int(positionX / 8)].pushable or level[int(positionY / 8 - 1)][int(positionX / 8)].sprite == TILE_WALL or level[int(positionY / 8 - 1)][int(positionX / 8)].sprite == TILE_METAL or level[int(positionY / 8 - 1)][int(positionX / 8)].sprite == TILE_GRENADE or level[int(positionY / 8 - 1)][int(positionX / 8)].sprite == TILE_GRASS2:
             continue
         if (thumby.buttonR.pressed() or thumby.buttonL.pressed()):
             continue
 
-        level[int(positionY / 8)][int(positionX / 8)].sprite = 0
+        level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_EMPTY
         positionY -= 8
         if positionY <= 0:
             positionY = 0
 
         smallElfSpriteRight.x = positionX
         smallElfSpriteRight.y = positionY
-        level[int(positionY / 8)][int(positionX / 8)].sprite = 40
+        level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_DWARF
 
     # Down
     if (thumby.buttonD.pressed() == True and positionY < 32 ):
         print("level[y]:", positionY / 8 + 1 )
-        if level[int(positionY / 8 + 1)][int(positionX / 8)].moveable or level[int(positionY / 8 + 1)][int(positionX / 8)].sprite == 4 or level[int(positionY / 8 + 1)][int(positionX / 8)].sprite == 5 or level[int(positionY / 8 + 1)][int(positionX / 8)].sprite == 6 or level[int(positionY / 8 + 1)][int(positionX / 8)].sprite == 12:
+        if level[int(positionY / 8 + 1)][int(positionX / 8)].pushable or level[int(positionY / 8 + 1)][int(positionX / 8)].sprite == TILE_WALL or level[int(positionY / 8 + 1)][int(positionX / 8)].sprite == TILE_METAL or level[int(positionY / 8 + 1)][int(positionX / 8)].sprite == TILE_GRENADE or level[int(positionY / 8 + 1)][int(positionX / 8)].sprite == TILE_GRASS2:
             continue
         if (thumby.buttonR.pressed() or thumby.buttonL.pressed()):
             continue
-        level[int(positionY / 8)][int(positionX / 8)].sprite = 0
+        level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_EMPTY
         positionY += 8
         if positionY > 32:
             positionY = 32
         
         smallElfSpriteRight.x = positionX
         smallElfSpriteRight.y = positionY
-        level[int(positionY / 8)][int(positionX / 8)].sprite = 40
+        level[int(positionY / 8)][int(positionX / 8)].sprite = TILE_DWARF
 
 
 
@@ -479,210 +475,210 @@ while(1):
     
     for i in range(5): 
         for j in range(9):
-            if level[i][j].sprite == 0:
+            if level[i][j].sprite == TILE_EMPTY:
                 sprite = emptyFrameSprite
                 spriteObj = SpriteInfo(0, [i, j])
-            if level[i][j].sprite == 1:
+            if level[i][j].sprite == TILE_GRASS:
                 sprite = smallPartialGrassSprite
                 spriteObj = SpriteInfo(1, [i, j])
                 
-            if level[i][j].sprite == 6:
+            if level[i][j].sprite == TILE_GRENADE:
                 sprite = smallGranadeSprite
                 spriteObj = SpriteInfo(6, [i, j])
 
                 if i > 0 and level[i-1][j].falling:
                     if level[i+1][j].sprite != 5: 
-                        level[i+1][j].sprite = 48
+                        level[i+1][j].sprite = TILE_EXPLOSION
                     if level[i-1][j].sprite != 5: 
-                        level[i-1][j].sprite = 48
+                        level[i-1][j].sprite = TILE_EXPLOSION
                     if level[i][j+1].sprite != 5: 
-                        level[i][j+1].sprite = 48 
+                        level[i][j+1].sprite = TILE_EXPLOSION 
                     if level[i][j-1].sprite != 5: 
-                        level[i][j-1].sprite = 48
+                        level[i][j-1].sprite = TILE_EXPLOSION
                 
                 if i < 4:
-                    if level[i+1][j].sprite == 0: 
-                        level[i][j].sprite = 0
+                    if level[i+1][j].sprite == TILE_EMPTY: 
+                        level[i][j].sprite = TILE_EMPTY
                         level[i][j].falling = False
-                        level[i][j].moveable = False
+                        level[i][j].pushable = False
                         
-                        level[i+1][j].sprite = 6
+                        level[i+1][j].sprite = TILE_GRENADE
                         level[i+1][j].falling = True
-                        level[i+1][j].moveable = True
+                        level[i+1][j].pushable = True
                         
                         if dead:
                             level = restart()       
                             dead = False
                     #bomb fall left
-                    elif level[i][j-1].sprite == 0:
-                        if level[i+1][j].sprite != 1 and level[i+1][j].sprite != 40  and level[i+1][j-1].sprite == 0:
-                            level[i][j].sprite = 0
+                    elif level[i][j-1].sprite == TILE_EMPTY:
+                        if level[i+1][j].sprite != 1 and level[i+1][j].sprite != 40  and level[i+1][j-1].sprite == TILE_EMPTY:
+                            level[i][j].sprite = TILE_EMPTY
                             level[i][j].falling = False
-                            level[i][j].moveable = False
+                            level[i][j].pushable = False
                             
-                            level[i][j-1].sprite = 6
+                            level[i][j-1].sprite = TILE_GRENADE
                             level[i][j-1].falling = True
-                            level[i][j-1].moveable = True
+                            level[i][j-1].pushable = True
                         
                             
                             
                     #bomb fall right
-                    elif level[i][j+1].sprite == 0:
-                        if level[i+1][j].sprite != 1 and level[i+1][j].sprite != 40 and level[i+1][j+1].sprite == 0:
-                            level[i][j].sprite = 0
+                    elif level[i][j+1].sprite == TILE_EMPTY:
+                        if level[i+1][j].sprite != 1 and level[i+1][j].sprite != 40 and level[i+1][j+1].sprite == TILE_EMPTY:
+                            level[i][j].sprite = TILE_EMPTY
                             level[i][j].falling = False
-                            level[i][j].moveable = False
+                            level[i][j].pushable = False
 
-                            level[i][j+1].sprite = 6
+                            level[i][j+1].sprite = TILE_GRENADE
                             level[i][j+1].falling = True
-                            level[i][j+1].moveable = True
+                            level[i][j+1].pushable = True
                         
 
                     elif level[i][j].falling == True:
                         if level[i+1][j].sprite != 1:
-                            level[i][j].sprite = 48
+                            level[i][j].sprite = TILE_EXPLOSION
                             level[i][j].falling = False
                             
                             if level[i+1][j].sprite != 5: 
-                                level[i+1][j].sprite = 48
+                                level[i+1][j].sprite = TILE_EXPLOSION
                             if level[i-1][j].sprite != 5: 
-                                level[i-1][j].sprite = 48
+                                level[i-1][j].sprite = TILE_EXPLOSION
                             if level[i][j+1].sprite != 5: 
-                                level[i][j+1].sprite = 48 
+                                level[i][j+1].sprite = TILE_EXPLOSION 
                             if level[i][j-1].sprite != 5: 
-                                level[i][j-1].sprite = 48
+                                level[i][j-1].sprite = TILE_EXPLOSION
                         
 
                     if level[i-1][j].falling:
                         if level[i+1][j].sprite != 5: 
-                            level[i+1][j].sprite = 48
+                            level[i+1][j].sprite = TILE_EXPLOSION
                         if level[i-1][j].sprite != 5: 
-                            level[i-1][j].sprite = 48
+                            level[i-1][j].sprite = TILE_EXPLOSION
                         if level[i][j+1].sprite != 5: 
-                            level[i][j+1].sprite = 48 
+                            level[i][j+1].sprite = TILE_EXPLOSION 
                         if level[i][j-1].sprite != 5: 
-                            level[i][j-1].sprite = 48
+                            level[i][j-1].sprite = TILE_EXPLOSION
                             
-                    if level[i+1][j].sprite == 1:
+                    if level[i+1][j].sprite == TILE_GRASS:
                         level[i][j].falling = False
     
-            if level[i][j].sprite == 2:
+            if level[i][j].sprite == TILE_ROCK:
                 sprite = smallBallSprite
                 spriteObj = SpriteInfo(2, [i, j])
                 
                 #stay in screen height range
                 if i < 4 and spriteRate == 3: 
                     #if empty below rock, rock falls
-                    if level[i+1][j].sprite == 0: 
-                        level[i][j].sprite = 0
+                    if level[i+1][j].sprite == TILE_EMPTY: 
+                        level[i][j].sprite = TILE_EMPTY
                         level[i][j].falling = False
-                        level[i][j].moveable = False
+                        level[i][j].pushable = False
                         
-                        level[i+1][j].sprite = 2
+                        level[i+1][j].sprite = TILE_ROCK
                         level[i+1][j].falling = True
-                        level[i+1][j].moveable = True
+                        level[i+1][j].pushable = True
                         if dead:
                             level = restart()       
                             dead = False
                         
-                    if level[i][j].falling == True and level[i+1][j].sprite == 40:
-                        level[i+1][j].sprite = 48
+                    if level[i][j].falling == True and level[i+1][j].sprite == TILE_WALL0:
+                        level[i+1][j].sprite = TILE_EXPLOSION
                         #dead is true
                         
                     if level[i+1][j].sprite != 6 or level[i+1][j].sprite != 0:
                         level[i][j].falling = False
                         
                     #rock fall left
-                    elif level[i][j-1].sprite == 0 and level[i+1][j-1].sprite == 0:
-                        if  level[i+1][j].sprite == 2  or level[i+1][j].sprite == 3 or level[i+1][j].sprite == 6:
-                            level[i][j].sprite = 0
+                    elif level[i][j-1].sprite == TILE_EMPTY and level[i+1][j-1].sprite == TILE_EMPTY:
+                        if  level[i+1][j].sprite == TILE_ROCK  or level[i+1][j].sprite == TILE_HEART or level[i+1][j].sprite == TILE_GRENADE:
+                            level[i][j].sprite = TILE_EMPTY
                             level[i][j].falling = False
-                            level[i][j].moveable = False
+                            level[i][j].pushable = False
                             
-                            level[i][j-1].sprite = 2
+                            level[i][j-1].sprite = TILE_ROCK
                             level[i][j-1].falling = True
-                            level[i][j-1].moveable = True
+                            level[i][j-1].pushable = True
                         
                     #rock fall right
-                    elif level[i][j+1].sprite == 0 and level[i+1][j+1].sprite == 0:
-                        if level[i+1][j].sprite == 2 or level[i+1][j].sprite == 3 or level[i+1][j].sprite == 6:
-                            level[i][j].sprite = 0
+                    elif level[i][j+1].sprite == TILE_EMPTY and level[i+1][j+1].sprite == TILE_EMPTY:
+                        if level[i+1][j].sprite == TILE_ROCK or level[i+1][j].sprite == TILE_HEART or level[i+1][j].sprite == TILE_GRENADE:
+                            level[i][j].sprite = TILE_EMPTY
                             level[i][j].falling = False
-                            level[i][j].moveable = False
+                            level[i][j].pushable = False
                             
-                            level[i][j+1].sprite = 2
+                            level[i][j+1].sprite = TILE_ROCK
                             level[i][j+1].falling = True
-                            level[i][j+1].moveable = True
+                            level[i][j+1].pushable = True
                             
                 
                         
                    
-            if level[i][j].sprite == 3:
+            if level[i][j].sprite == TILE_HEART:
                 sprite = smallHeartSprite
                 spriteObj = SpriteInfo(3, [i, j])
                 #if empty below heart, heart falls
                 if i < 4 and spriteRate == 3: 
                     #if empty below rock, rock falls
-                    if level[i+1][j].sprite == 0: 
-                        level[i][j].sprite = 0
+                    if level[i+1][j].sprite == TILE_EMPTY: 
+                        level[i][j].sprite = TILE_EMPTY
                         level[i][j].falling = False
-                        level[i][j].moveable = False
+                        level[i][j].pushable = False
                         
-                        level[i+1][j].sprite = 3
+                        level[i+1][j].sprite = TILE_HEART
                         level[i+1][j].falling = True
-                        level[i+1][j].moveable = False
+                        level[i+1][j].pushable = False
                         
                         if dead:
                             level = restart()       
                             dead = False
                     #heart fall left
-                    elif level[i][j-1].sprite == 0 and level[i+1][j-1].sprite == 0:
-                        if  level[i+1][j].sprite == 2  or level[i+1][j].sprite == 3 or level[i+1][j].sprite == 6:
-                            level[i][j].sprite = 0
+                    elif level[i][j-1].sprite == TILE_EMPTY and level[i+1][j-1].sprite == TILE_EMPTY:
+                        if  level[i+1][j].sprite == TILE_ROCK  or level[i+1][j].sprite == TILE_HEART or level[i+1][j].sprite == TILE_GRENADE:
+                            level[i][j].sprite = TILE_EMPTY
                             level[i][j].falling = False
-                            level[i][j].moveable = False
+                            level[i][j].pushable = False
                             
-                            level[i][j-1].sprite = 3
+                            level[i][j-1].sprite = TILE_HEART
                             level[i][j-1].falling = True
-                            level[i][j-1].moveable = False
+                            level[i][j-1].pushable = False
                         
                     #heart fall right
-                    elif level[i][j+1].sprite == 0 and level[i+1][j+1].sprite == 0:
-                        if level[i+1][j].sprite == 2 or level[i+1][j].sprite == 3 or level[i+1][j].sprite == 6:
-                            level[i][j].sprite = 0
+                    elif level[i][j+1].sprite == TILE_EMPTY and level[i+1][j+1].sprite == TILE_EMPTY:
+                        if level[i+1][j].sprite == TILE_ROCK or level[i+1][j].sprite == TILE_HEART or level[i+1][j].sprite == TILE_GRENADE:
+                            level[i][j].sprite = TILE_EMPTY
                             level[i][j].falling = False
-                            level[i][j].moveable = False
+                            level[i][j].pushable = False
                             
-                            level[i][j+1].sprite = 3
+                            level[i][j+1].sprite = TILE_HEART
                             level[i][j+1].falling = True
-                            level[i][j+1].moveable = False
+                            level[i][j+1].pushable = False
                             
                 
-                    if level[i][j].falling == True and level[i+1][j].sprite == 40:
-                        level[i+1][j].sprite = 48
+                    if level[i][j].falling == True and level[i+1][j].sprite == TILE_WALL0:
+                        level[i+1][j].sprite = TILE_EXPLOSION
                         
                     if level[i+1][j].sprite != 0:
                         level[i][j].falling = False
 
 
                         
-            if level[i][j].sprite == 4:
+            if level[i][j].sprite == TILE_WALL:
                 sprite = smallBrickWallSprite
                 spriteObj = SpriteInfo(4, [i, j])
                 
-            if level[i][j].sprite == 5:
+            if level[i][j].sprite == TILE_METAL:
                 sprite = smallMetalWallSprite
                 spriteObj = SpriteInfo(5, [i, j])  
             
 
             #balloon
-            if level[i][j].sprite == 12:
+            if level[i][j].sprite == TILE_GRASS2:
                 sprite = smallBalloonSprite
                 if i > 0 and i <= 4:
 
                     #only one object on balloon. object and balloon both float up
                     
-                    if i > 1 and level[i-1][j].moveable and level[i-2][j].sprite == 0:
+                    if i > 1 and level[i-1][j].pushable and level[i-2][j].sprite == TILE_EMPTY:
                     
                         level[i-2][j] = level[i-1][j]
                         level[i-1][j] = level[i][j]
@@ -690,7 +686,7 @@ while(1):
                         
                         
                     #at least 2 objects on balloon? balloon falls
-                    elif i > 1 and i < 4 and level[i-1][j].moveable and level[i-2][j].moveable and level[i+1][j].sprite == 0:
+                    elif i > 1 and i < 4 and level[i-1][j].pushable and level[i-2][j].pushable and level[i+1][j].sprite == TILE_EMPTY:
                         print("inside two object on balloon condition")
                         
                         level[i+1][j] = level[i][j]
@@ -700,19 +696,19 @@ while(1):
         
                     
                     #float up with no objects above
-                    elif level[i-1][j].sprite == 0:
-                        level[i][j].sprite = 0
+                    elif level[i-1][j].sprite == TILE_EMPTY:
+                        level[i][j].sprite = TILE_EMPTY
                         level[i][j].falling = False
-                        level[i][j].moveable = False
+                        level[i][j].pushable = False
                         
-                        level[i-1][j].sprite = 12
+                        level[i-1][j].sprite = TILE_BALLOON
                         level[i-1][j].falling = False
-                        level[i-1][j].moveable = True
+                        level[i-1][j].pushable = True
                         
                         
                 
                 
-            if level[i][j].sprite == 40:
+            if level[i][j].sprite == TILE_WALL0:
                 if (lastDir == "right" or lastDir == ""):
                     sprite = smallElfSpriteRight
                     spriteObj = SpriteInfo(40, [i, j])
@@ -723,7 +719,7 @@ while(1):
                     sprite = smallElfSpriteLeft
                     positionX = j*8
                     positionY = i*8
-            if level[i][j].sprite == 48:
+            if level[i][j].sprite == TILE_WALL8:
                 sprite = smallExplosionSprite
                 spriteObj = SpriteInfo(48, [i, j])
 
@@ -746,7 +742,7 @@ while(1):
                 smallExplosionSprite.setFrame(smallExplosionSprite.currentFrame+1)
 
                 if smallExplosionSprite.currentFrame == 5:
-                    level[i][j].sprite = 0
+                    level[i][j].sprite = TILE_EMPTY
                     level[i][j].falling = False
                     #dead = True
                 
