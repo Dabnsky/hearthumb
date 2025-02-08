@@ -214,6 +214,7 @@ TILE_DWARF = 40
 TILE_EXPLOSION = 48
 
 
+
 # Make a sprite object using bytearray (a path to binary file from 'IMPORT SPRITE' is also valid)
 smallElfSpriteLeft = thumby.Sprite(8, 8, smallElfWalkingLeftFrames)
 smallElfSpriteRight = thumby.Sprite(8, 8, smallElfWalkingRightFrames)
@@ -264,6 +265,11 @@ dead = False
 
 spriteRate = 0 
 heartCount = 0
+
+ABOVE = level[i-1][j]
+BELOW = level[i+1][j]
+LEFT_OF = level[i][j-1]
+RIGHT_OF = level[i][j+1]
 
 while(1):
     
@@ -331,7 +337,7 @@ while(1):
                     positionX = 0
 
             #move balloon
-            if level[int(positionY / 8)][int(positionX / 8) - 1].sprite == TILE_GRASS2:
+            if level[int(positionY / 8)][int(positionX / 8) - 1].sprite == TILE_GRASS:
                 level[int(positionY / 8)][int(positionX / 8) - 2].sprite = TILE_BALLOON
                 level[int(positionY / 8)][int(positionX / 8) - 2].falling = False
                 level[int(positionY / 8)][int(positionX / 8) - 2].pushable = True
@@ -477,24 +483,14 @@ while(1):
         for j in range(9):
             if level[i][j].sprite == TILE_EMPTY:
                 sprite = emptyFrameSprite
-                spriteObj = SpriteInfo(0, [i, j])
+                spriteObj = SpriteInfo(TILE_EMPTY, [i, j])
             if level[i][j].sprite == TILE_GRASS:
                 sprite = smallPartialGrassSprite
-                spriteObj = SpriteInfo(1, [i, j])
+                spriteObj = SpriteInfo(TILE_GRASS, [i, j])
                 
             if level[i][j].sprite == TILE_GRENADE:
                 sprite = smallGranadeSprite
                 spriteObj = SpriteInfo(6, [i, j])
-
-                if i > 0 and level[i-1][j].falling:
-                    if level[i+1][j].sprite != 5: 
-                        level[i+1][j].sprite = TILE_EXPLOSION
-                    if level[i-1][j].sprite != 5: 
-                        level[i-1][j].sprite = TILE_EXPLOSION
-                    if level[i][j+1].sprite != 5: 
-                        level[i][j+1].sprite = TILE_EXPLOSION 
-                    if level[i][j-1].sprite != 5: 
-                        level[i][j-1].sprite = TILE_EXPLOSION
                 
                 if i < 4:
                     if level[i+1][j].sprite == TILE_EMPTY: 
@@ -535,7 +531,7 @@ while(1):
                         
 
                     elif level[i][j].falling == True:
-                        if level[i+1][j].sprite != 1:
+                        if level[i+1][j].sprite != TILE_GRASS:
                             level[i][j].sprite = TILE_EXPLOSION
                             level[i][j].falling = False
                             
@@ -564,7 +560,7 @@ while(1):
     
             if level[i][j].sprite == TILE_ROCK:
                 sprite = smallBallSprite
-                spriteObj = SpriteInfo(2, [i, j])
+                spriteObj = SpriteInfo(TILE_ROCK, [i, j])
                 
                 #stay in screen height range
                 if i < 4 and spriteRate == 3: 
@@ -711,15 +707,15 @@ while(1):
             if level[i][j].sprite == TILE_WALL0:
                 if (lastDir == "right" or lastDir == ""):
                     sprite = smallElfSpriteRight
-                    spriteObj = SpriteInfo(40, [i, j])
+                    spriteObj = SpriteInfo(TILE_DWARF, [i, j])
                     positionX = j*8
                     positionY = i*8
                 if lastDir == "left":
-                    spriteObj = SpriteInfo(40, [i, j])
+                    spriteObj = SpriteInfo(TILE_DWARF, [i, j])
                     sprite = smallElfSpriteLeft
                     positionX = j*8
                     positionY = i*8
-            if level[i][j].sprite == TILE_WALL8:
+            if level[i][j].sprite == TILE_WALL:
                 sprite = smallExplosionSprite
                 spriteObj = SpriteInfo(48, [i, j])
 
